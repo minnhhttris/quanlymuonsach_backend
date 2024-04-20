@@ -1,7 +1,6 @@
-
-const TheoDoiMuonSach = require("../models/TrackBookModel");
-const DocGia = require("../models/ReaderModel");
-const Sach = require("../models/BookModel");
+const TheoDoiMuonSach = require("../models/TheoDoiMuonSach");
+const DocGia = require("../models/DocGia");
+const Sach = require("../models/Sach");
 class RentController {
 	async addToRent(req, res, next) {
 		try {
@@ -62,47 +61,6 @@ class RentController {
 			res.status(500).json({ message: error.message });
 		}
 	}
-
-	// async filterByTenDocGia(req, res, next) {
-	//   try {
-	//     const searchQuery = req.query.tenDocGia;
-	//     const searchTraSach = req.query.traSach;
-	//     let query = {};
-
-	//     if (searchTraSach)
-	//       query.TraSach = { $regex: searchTraSach, $options: "i" };
-	//     if (searchQuery)
-	//       query["MaDocGia.Ten"] = { $regex: searchQuery, $options: "i" };
-
-	//     const theoDoiMuonSachs = await TheoDoiMuonSach.find(query).populate({
-	//       path: "MaDocGia",
-	//       match: { Ten: { $regex: searchQuery, $options: "i" } },
-	//     });
-
-	//     const filteredResults = theoDoiMuonSachs.filter(
-	//       (item) => item.MaDocGia !== null
-	//     );
-	//     res.send(filteredResults);
-	//   } catch (error) {
-	//     res.status(500).json({ message: error.message });
-	//   }
-	// }
-
-	// async listRents(req, res, next) {
-	//   try {
-	//     const TrangThai = req.params.trangThai;
-	//     TheoDoiMuonSach.find({ TrangThai: TrangThai })
-	//       .populate("MaSach")
-	//       .populate("MaDocGia")
-	//       .then((TheoDoiMuonSachs) => {
-	//         return res.send(TheoDoiMuonSachs);
-	//       })
-	//       .catch((err) => res.json({ message: err.message }));
-	//   } catch (error) {
-	//     console.log("Lỗi khi thêm uống", error);
-	//     res.status(500).json({ message: error.message });
-	//   }
-	// }
 
 	async filterByTenDocGia(req, res, next) {
 		try {

@@ -1,4 +1,4 @@
-const Sach = require("../models/BookModel");
+const Sach = require("../models/Sach");
 const multer = require("multer");
 const storage = require("../../services/uploadImage");
 
@@ -9,7 +9,7 @@ class BookController {
 			try {
 				const books = await Sach.find({
 					TenSach: { $regex: searchQuery, $options: "i" },
-				}).populate("MaNxb"); // Populate thông tin của nhà xuất bản
+				}).populate("MaNxb"); 
 
 				if (books.length > 0) {
 					res.json(books);
@@ -21,7 +21,7 @@ class BookController {
 			}
 		} else {
 			try {
-				const books = await Sach.find().populate("MaNxb"); // Populate thông tin của nhà xuất bản
+				const books = await Sach.find().populate("MaNxb"); 
 				res.json(books);
 			} catch (error) {
 				res.status(500).json({ message: error.message });
@@ -30,87 +30,43 @@ class BookController {
 	}
 
 	async addBook(req, res, next) {
-		const upload = multer({ storage: storage }).single("image");
-		upload(req, res, async function (err) {
-			if (err instanceof multer.MulterError) {
-				return res.status(400).json({ error: err.message });
-			} else if (err) {
-				return res.status(500).json({ error: err.message });
-			} else {
-				try {
-					const TenSach = req.body.tenSach;
-					const DonGia = parseInt(req.body.donGia, 10);
-					const SoQuyen = parseInt(req.body.soQuyen, 10);
-					const NamXuatBan = parseInt(req.body.namXuatBan, 10);
-					const MaNxb = req.body.idNxb;
-					const HinhSach = req.file.originalname;
-					const existingBook = await Sach.findOne({ TenSach });
-					if (existingBook) {
-						existingBook.SoQuyen += SoQuyen;
-						await existingBook.save();
-						return res.json({ update: "Sách đã được cập nhật" });
-					} else {
-						const newSach = new Sach({
-							TenSach,
-							DonGia,
-							SoQuyen,
-							NamXuatBan,
-							MaNxb,
-							HinhSach,
-						});
-						await newSach.save();
-						return res.json({ message: `Sách đã được thêm ${TenSach}` });
-					}
-				} catch (error) {
-					res.status(500).json({ message: err.message });
-				}
-			}
-		});
+		try{
+		        if (!req.file) {
+					return res.status(500).json({ "error": "Chưa có image" })
+                }
+
+                 const filename =  req.file.filename ;
+				 req.body.HinhSach=filename;
+
+                 const newSach = new  Sach(req.body);
+                 newSach.save();
+                 	return res.status(201).json({ "massage": "Thêm sách thành công" });
+
+
+
+		}
+		catch (e){
+			
+
+			// sửa lại theo cái cảu ông là ok
+		}
 	}
 
 	async updateBook(req, res, next) {
-		const upload = multer({ storage: storage }).single("image");
-		upload(req, res, async function (err) {
-			if (err instanceof multer.MulterError) {
-				return res.status(400).json({ error: err.message });
-			} else if (err) {
-				return res.status(500).json({ error: err.message });
-			} else {
-				try {
-					const id = req.params.id;
-					const existingBook = await Sach.findById(id);
-					if (existingBook) {
-						if (req.body.tenSach) {
-							existingBook.TenSach = req.body.tenSach;
-						}
-						if (req.body.donGia) {
-							existingBook.DonGia = parseInt(req.body.donGia, 10);
-						}
-						if (req.body.soQuyen) {
-							existingBook.SoQuyen = parseInt(req.body.soQuyen, 10);
-						}
-						if (req.body.idNxb) {
-							existingBook.MaNxb = req.body.idNxb;
-						}
-						if (req.body.namXuatBan) {
-							existingBook.NamXuatBan = req.body.namXuatBan;
-						}
-						if (req.file) {
-							existingBook.HinhSach = req.file.originalname;
-						}
-						await existingBook.save();
-						return res.json({
-							message: "Sách đã được cập nhật",
-							data: existingBook,
-						});
-					} else {
-						return res.send({ error: "Cập nhật thất bại" });
-					}
-				} catch (error) {
-					res.status(500).json({ message: error.message });
-				}
-			}
-		});
+		try {
+            if(req.file){
+                req.body.HinhSach=req.file.filename
+            }
+            console.log(req.body)
+
+            const updatedProduct = await Sach.findByIdAndUpdate(req.params.id, req.body, { new: true });
+            if (!updatedProduct) {
+                return res.status(404).json({ message: 'Sach not found' });
+            }
+            res.json(updatedProduct);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
 	}
 
 	async deleteBook(req, res, next) {
@@ -128,3 +84,5 @@ class BookController {
 		}
 	}
 }
+
+module.exports = new BookController();
