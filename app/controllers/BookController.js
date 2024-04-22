@@ -31,24 +31,22 @@ class BookController {
 
 	async addBook(req, res, next) {
 		try{
+			console.log("Connect Add Book");
 		        if (!req.file) {
 					return res.status(500).json({ "error": "Chưa có image" })
                 }
-
                  const filename =  req.file.filename ;
 				 req.body.HinhSach=filename;
 
                  const newSach = new  Sach(req.body);
                  newSach.save();
-                 	return res.status(201).json({ "massage": "Thêm sách thành công" });
+                 	return res.status(201).json({ "message": "Thêm sách thành công" });
 
 
 
 		}
 		catch (e){
-			
-
-			// sửa lại theo cái cảu ông là ok
+			console.log(e.message);
 		}
 	}
 

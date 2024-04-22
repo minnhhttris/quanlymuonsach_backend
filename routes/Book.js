@@ -1,16 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const upload=require("../app/middleware/uploadImage")
-const authenticationController = require("../app/controllers/AuthenticationController");
-
-router.post("/register", upload.single("avatar"), authenticationController.createUser);
-router.post("/register/staff",upload.single("avatar"), authenticationController.createStaff);
-router.post("/login", authenticationController.login);
-router.post("/login/staff", authenticationController.loginStaff);
-router.get("/logout", authenticationController.logout);
-router.get("/info/staff/:id", authenticationController.infoStaff);
-router.put("/edit/staff/:id",upload.single("avatar"), authenticationController.editProfileStaff);
-router.get("/:id", authenticationController.infoUser);
-router.put("/edit/:id", upload.single("avatar"),authenticationController.editProfile);
+const bookController = require("../app/controllers/BookController");
+router.get("/", bookController.listBook);
+router.post("/", upload.single("image"),bookController.addBook);
+router.put("/:id",upload.single("image"), bookController.updateBook);
+router.delete("/:id", bookController.deleteBook);
 
 module.exports = router;

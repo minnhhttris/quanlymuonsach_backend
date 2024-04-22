@@ -6,7 +6,7 @@ const Sach = new Schema({
 	DonGia: { type: Number },
 	SoQuyen: { type: Number },
 	NamXuatBan: { type: Number },
-	MaNxb: { type: mongoose.Types.ObjectId, ref: "NhaXuatBan" },
+	MaNxb: { type: mongoose.Types.ObjectId, ref: "PublisherModel" },
 	TacGia: { type: String, maxLength: 255 },
 	HinhSach: { type: String, maxLength: 255 },
 });

@@ -47,11 +47,11 @@ class PublishedController {
 			const id = req.params.id;
 			const existingPublished = await Published.findById(id);
 			if (existingPublished) {
-				if (req.body.tenNxb) {
-					existingPublished.TenNxb = req.body.tenNxb;
+				if (req.body.TenNxb) {
+					existingPublished.TenNxb = req.body.TenNxb;
 				}
-				if (req.body.diaChi) {
-					existingPublished.DiaChi = req.body.diaChi;
+				if (req.body.DiaChi) {
+					existingPublished.DiaChi = req.body.DiaChi;
 				}
 				await existingPublished.save();
 				return res.json({ message: "Nhà xuất bản đã được cập nhật" });
