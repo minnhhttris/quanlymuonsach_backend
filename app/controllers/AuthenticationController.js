@@ -12,8 +12,6 @@ class Authentication {
                     "error": "Chưa có image"
                 })
             }
-
-
             const HoTenNv = req.body.username;
             const Password = req.body.password;
             const DiaChi = req.body.address;
@@ -104,18 +102,20 @@ class Authentication {
     }
 
     async login(req, res, next) {
-        const DienThoai = req.body.phone;
-        const Password = req.body.password;
+        const phone = req.body.phone;
+        const password = req.body.password;
+        console.log(phone,password);
+
         try {
             const existingUser = await DocGia.findOne({
-                DienThoai
+                DienThoai : phone
             });
             if (!existingUser) {
                 return res.json({
                     error: "Tài khoản không tồn tại"
                 });
             } else {
-                const checkPassword = await userServices.checkPassword(Password, existingUser.Password);
+                const checkPassword = await userServices.checkPassword(password, existingUser.Password);
                 if (!checkPassword) {
                     return res.json({
                         error: "Sai mật khẩu"
